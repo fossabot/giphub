@@ -1,6 +1,6 @@
 function loadScript(name, tabId, cb) {
     if (process.env.NODE_ENV === 'production') {
-        chrome.tabs.executeScript(tabId, {
+        browser.tabs.executeScript(tabId, {
             file: `/js/${name}.bundle.js`,
             runAt: 'document_end'
         }, cb);
@@ -9,15 +9,29 @@ function loadScript(name, tabId, cb) {
         fetch(`http://localhost:3000/js/${name}.bundle.js`)
             .then(res => res.text())
             .then((fetchRes) => {
-                chrome.tabs.executeScript(tabId, { code: fetchRes, runAt: 'document_end' }, cb);
+                browser.tabs.executeScript(tabId, { code: fetchRes, runAt: 'document_end' }, cb);
             });
     }
 }
 
 const arrowURLs = ['^https://github\\.com'];
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status !== 'loading' || !tab.url.match(arrowURLs.join('|'))) return;
 
-    loadScript('inject', tabId, () => console.log('giphub init'));
+    loadScript('inject', tabId, () => console.log('giphub init12'));
+});
+
+browser.runtime.onMessage.addListener(({ searchTerm, limit, offset }, sender, sendResponse) => {
+    console.log('received message', searchTerm, limit);
+    const xhrPromise = fetch(`https://api.giphy.com/v1/gifs/search?q=${encodeURI(searchTerm)}&offset=${offset}&limit=${limit}&api_key=dc6zaTOxFJmzC`);
+    xhrPromise.then((res) => {
+        res.json().then((json) => {
+            console.log('about to resolve', json);
+            sendResponse({
+                status: res.status,
+                json,
+            });
+        }).catch(sendResponse);
+    });
 });

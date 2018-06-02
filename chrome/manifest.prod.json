@@ -14,6 +14,10 @@
   "background": {
     "page": "background.html"
   },
-  "permissions": [ "tabs", "https://github.com/*" ],
-  "content_security_policy": "default-src 'self'; script-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;"
+  "permissions": [
+    "tabs",
+    "webRequest",
+    "https://github.com/*"
+  ],
+  "content_security_policy": "default-src 'self' https://api.giphy.com; script-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }

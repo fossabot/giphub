@@ -28,7 +28,14 @@ import style from './App.css';
 export default class App extends Component {
     static propTypes = {
         isVisible: PropTypes.bool.isRequired,
-        gifs: PropTypes.array.isRequired,
+        gifs: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            images: PropTypes.shape({
+                downsized_medium: PropTypes.shape({
+                    url: PropTypes.string.isRequired,
+                }).isRequired,
+            }).isRequired,
+        })).isRequired,
         searchInProgress: PropTypes.bool.isRequired,
         searchError: PropTypes.bool.isRequired,
         textarea: PropTypes.object,
