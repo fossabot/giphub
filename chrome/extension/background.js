@@ -22,16 +22,15 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     loadScript('inject', tabId, () => console.log('giphub init12'));
 });
 
-browser.runtime.onMessage.addListener(({ searchTerm, limit, offset }, sender, sendResponse) => {
-    console.log('received message', searchTerm, limit);
+browser.runtime.onMessage.addListener(({ searchTerm, limit, offset }, sender, sendMessage) => {
     const xhrPromise = fetch(`https://api.giphy.com/v1/gifs/search?q=${encodeURI(searchTerm)}&offset=${offset}&limit=${limit}&api_key=dc6zaTOxFJmzC`);
     xhrPromise.then((res) => {
         res.json().then((json) => {
-            console.log('about to resolve', json);
-            sendResponse({
+            sendMessage({
                 status: res.status,
                 json,
             });
-        }).catch(sendResponse);
+        });
     });
+    return true;
 });
