@@ -19,7 +19,7 @@ const arrowURLs = ['^https://github\\.com'];
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status !== 'loading' || !tab.url.match(arrowURLs.join('|'))) return;
 
-    loadScript('inject', tabId, () => console.log('giphub init12'));
+    loadScript('inject', tabId, () => console.log('giphub init'));
 });
 
 browser.runtime.onMessage.addListener(({ searchTerm, limit, offset }, sender, sendMessage) => {
