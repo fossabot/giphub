@@ -7,6 +7,7 @@ const customPath = path.join(__dirname, './customPublicPath');
 const hotScript = 'webpack-hot-middleware/client?path=__webpack_hmr&dynamicPublicPath=true';
 
 const baseDevConfig = () => ({
+    mode: 'development',
     devtool: 'eval-cheap-module-source-map',
     entry: {
         background: [customPath, hotScript, path.join(__dirname, '../chrome/extension/background')],
@@ -46,7 +47,7 @@ const baseDevConfig = () => ({
         extensions: ['.js', '.jsx']
     },
     module: {
-        loaders: [{
+        rules: [{
             test: /\.jsx?$/,
             loader: 'babel-loader',
             exclude: /node_modules/,
