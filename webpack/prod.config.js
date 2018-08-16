@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const customPath = path.join(__dirname, './customPublicPath');
 
 module.exports = {
+    mode: 'production',
     entry: {
         background: [customPath, path.join(__dirname, '../chrome/extension/background')],
         inject: [customPath, path.join(__dirname, '../chrome/extension/inject')]
@@ -15,23 +16,20 @@ module.exports = {
     },
     plugins: [
         new webpack.IgnorePlugin(/[^/]+\/[\S]+.dev$/),
-        new webpack.optimize.UglifyJsPlugin({
-            comments: false,
-            compressor: {
-                warnings: false
-            }
-        }),
         new webpack.DefinePlugin({
             'process.env': {
                 NODE_ENV: JSON.stringify('production')
             }
         })
     ],
+    optimization: {
+        minimize: true,
+    },
     resolve: {
         extensions: ['.js', '.jsx']
     },
     module: {
-        loaders: [{
+        rules: [{
             test: /\.jsx?$/,
             loader: 'babel-loader',
             exclude: /node_modules/
