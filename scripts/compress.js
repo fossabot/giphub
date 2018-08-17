@@ -26,7 +26,7 @@ crx.load(['build/manifest.json'])
             const updateXML = crx.generateUpdateXML();
 
             fs.writeFileSync('update.xml', updateXML);
-            fs.writeFile(`${name}.crx`, crxBuffer);
+            fs.writeFileSync(`${name}.crx`, crxBuffer);
         });
     })
     .catch(console.error);
