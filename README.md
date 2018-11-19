@@ -2,13 +2,13 @@
 Giphub let's you insert Giphy GIFs from within GitHub.
 
 ## Build steps
-1. `yarn install --no-lockfile` – Downloads all dependencies
-2. `yarn build` – Builds the extension in ./build.
-3. `yarn compress` – Packages ./build into a Chrome extension.
+1. `npm ci` – Downloads all dependencies
+2. `npm run-script build` – Builds the extension in ./build.
+3. `npm run-script compress` – Packages ./build into a Chrome extension.
 
 ## Development
-Start with `yarn install` to fetch and download all dependencies.
+Start with `npm install` to fetch and download all dependencies.
 
-* `yarn outdated` – List outdated dependencies
-* `yarn dev` – Builds the extension in ./dev and runs a web server on localhost for hot-reloading to ease development.
-* `yarn lint` – List warning and errors in the code using ESLint
+* `npm outdated` – List outdated dependencies
+* `npm run-script dev` – Builds the extension in ./dev and runs a web server on localhost for hot-reloading to ease development.
+* `npm run-script lint` – List warning and errors in the code using ESLint
