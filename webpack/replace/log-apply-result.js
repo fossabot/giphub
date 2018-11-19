@@ -13,11 +13,11 @@ module.exports = function(updatedModules, renewedModules) {
 			console.warn("[HMR]  - " + moduleId);
 		});
 
-		if(chrome && chrome.runtime && chrome.runtime.reload) {
+		if(browser && browser.runtime && browser.runtime.reload) {
 			console.warn("[HMR] extension reload");
-			chrome.runtime.reload();
+			browser.runtime.reload();
 		} else {
-			console.warn("[HMR] Can't extension reload. not found chrome.runtime.reload.");
+			console.warn("[HMR] Can't extension reload. not found browser.runtime.reload.");
 		}
 	}
 
