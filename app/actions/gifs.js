@@ -1,29 +1,41 @@
 import actionTypes from './gif-action-types';
 
+const fetchGiphyAPI = (searchTerm, limit, offset = 0) => browser.runtime.sendMessage({
+    searchTerm,
+    limit,
+    offset,
+});
+
 export const searchGifs = searchTerm => (dispatch, getState) => {
+    console.log('searching for GIFs');
     dispatch({ type: actionTypes.SEARCH_GIF, payload: searchTerm });
     const limit = getState().gifs.searchLimit;
-    return fetch(`https://api.giphy.com/v1/gifs/search?q=${encodeURI(searchTerm)}&limit=${limit}&api_key=dc6zaTOxFJmzC`)
-        .then((res) => {
-            if (res.status !== 200) {
+    const promise = fetchGiphyAPI(searchTerm, limit);
+    console.dir(promise);
+    promise.then((res) => {
+        console.log('Server antwortete', res);
+        if (res.status !== 200) {
+            dispatch({ type: actionTypes.SEARCH_ERROR });
+        } else {
+            const { data, meta, pagination } = res.json;
+            if (meta.status !== 200) {
                 dispatch({ type: actionTypes.SEARCH_ERROR });
             }
-            res.json().then(({ data, meta, pagination }) => {
-                if (meta.status !== 200) {
-                    dispatch({ type: actionTypes.SEARCH_ERROR });
-                }
 
-                if (pagination.total_count > pagination.count) {
-                    dispatch({ type: actionTypes.HAS_MORE_PAGES, payload: true });
-                }
+            if (pagination.total_count > pagination.count) {
+                dispatch({ type: actionTypes.HAS_MORE_PAGES, payload: true });
+            }
 
-                dispatch({
-                    type: actionTypes.RECEIVE_GIF,
-                    payload: data,
-                });
+            dispatch({
+                type: actionTypes.RECEIVE_GIF,
+                payload: data,
             });
-        })
-        .catch(() => dispatch({ type: actionTypes.SEARCH_ERROR }));
+        }
+    }).catch((...args) => {
+        console.error('Suche fehlgeschlagen', args, typeof args[0]);
+        console.dir(args);
+        return dispatch({ type: actionTypes.SEARCH_ERROR });
+    });
 };
 
 export const loadMore = () => (dispatch, getState) => {
@@ -33,12 +45,13 @@ export const loadMore = () => (dispatch, getState) => {
         const offset = getState().gifs.searchOffset;
         const limit = getState().gifs.searchLimit;
         const currentGifs = getState().gifs.gifs;
-        return fetch(`https://api.giphy.com/v1/gifs/search?q=${encodeURI(lastSearchTerm)}&offset=${offset}&limit=${limit}&api_key=dc6zaTOxFJmzC`)
+        return fetchGiphyAPI(lastSearchTerm, limit, offset)
             .then((res) => {
                 if (res.status !== 200) {
                     dispatch({ type: actionTypes.SEARCH_ERROR });
-                }
-                res.json().then(({ data, meta, pagination }) => {
+                } else {
+                    const { data, meta, pagination } = res.json;
+                    console.log('received', data);
                     if (meta.status !== 200) {
                         dispatch({ type: actionTypes.SEARCH_ERROR });
                     }
@@ -53,7 +66,7 @@ export const loadMore = () => (dispatch, getState) => {
                         type: actionTypes.RECEIVE_MORE_GIF,
                         payload: data,
                     });
-                });
+                }
             })
             .catch(() => dispatch({ type: actionTypes.SEARCH_ERROR }));
     }

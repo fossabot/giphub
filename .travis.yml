@@ -1,9 +1,3 @@
 language: node_js
-install:
-  - yarn install --pure-lockfile
 script:
-  - yarn run build
-cache:
-  yarn: true
-  directories:
-    - "node_modules"
+  - npm run-script build
